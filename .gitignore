@@ -1,0 +1,8 @@
+DebugConfig/
+Library/
+Listings/
+Objects/
+Start/
+System/
+*.scvd
+*.bat
