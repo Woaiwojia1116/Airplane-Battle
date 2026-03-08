@@ -73,8 +73,8 @@ void AD_Init(void)
 //} 
 void ANJIAN_Get(void)
 {
-	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_2)==RESET)
-		AD_Value[2] = 1;
-	else  AD_Value[2] = 0;
+	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_2)==SET)
+		AD_Value[2] = 0;
+	else  AD_Value[2] = 1;
 }
 	

@@ -59,17 +59,21 @@ void Game_Init(void)
 	AD_Init();
 	game_state = 0;
 	AddEnemy(&list);
+	AddEnemy(&list);
+	AddEnemy(&list);
 }
 void Key_Pro(void)
 {
-	Key_Num = Key_GetNum();       
-	if(game_state==0&&Key_Num==1)
+//	Key_Num = Key_GetNum();   
+	Key_Num = AD_Value[2];    
+	if(game_state==0&&Key_Num==0)
 		game_state=1;		
 }                                                                                                                                                                                                                                                                                                                                   
 void AD_Conver(void)    //将ad值转化为屏幕的宽度
 {
 	x =  AD_Value[0]*123/4095;
 	y =  AD_Value[1]*59/4095;
+	srand(AD_Value[0]);
 }
 typedef struct{
 	uint8_t x_L;
@@ -108,13 +112,13 @@ void Bullet_Show(void)   //显示子弹
 }
 void Enemy_Show(void)
 {
-	if(Enemy_slow_10<10)return;
+	if(Enemy_slow_10<5)return;
 	Enemy_slow_10 = 0;
 	Enemy *current = list.head;
 	while(current!=NULL)
 	{
 		current->enemypos.Enemy_X_R = current->enemypos.Enemy_X_L+Enemy_Unlook_offset;
-		current->enemypos.Enemy_Y_D = current->enemypos.Enemy_Y_U+Enemy_Unlook_offset;
+		current->enemypos.Enemy_Y_D = current->enemypos.Enemy_Y_U+Enemy_Unlook_offset;  //这个可以决定子弹在距离敌人多远时候判定为碰撞
 		
 		if(current->enemypos.Enemy_Y_U<59)
 		{
@@ -136,21 +140,22 @@ void Check_crush(void)
 	while(current!=NULL)
 	{
 		if((B.B_X_L<current->enemypos.Enemy_X_R&&B.B_X_R>current->enemypos.Enemy_X_R&&B.B_Y_U<current->enemypos.Enemy_Y_D)
-			||(B.B_X_L<current->enemypos.Enemy_X_L&&B.B_X_R>current->enemypos.Enemy_X_L&&B.B_Y_U<current->enemypos.Enemy_Y_D))		
+			||(B.B_X_L<current->enemypos.Enemy_X_L&&B.B_X_R>current->enemypos.Enemy_X_L&&B.B_Y_U<current->enemypos.Enemy_Y_D))	
 		{
 			B_Y = 0;
 			current->enemypos.Enemy_Y_U = 0;
-		}		
-		current = current->next;
-	}
-    if(current!=NULL)
-	{
-		if((B.B_X_L<current->enemypos.Enemy_X_R&&B.B_X_R>current->enemypos.Enemy_X_R&&B.B_Y_U<current->enemypos.Enemy_Y_D)
-			||(B.B_X_L<current->enemypos.Enemy_X_L&&B.B_X_R>current->enemypos.Enemy_X_L&&B.B_Y_U<current->enemypos.Enemy_Y_D))	
+			current->enemypos.Enemy_Y_D = Enemy_Unlook_offset;
+			current->enemypos.Enemy_X_L = rand() % (128 - Enemy_Unlook_offset);
+			current->enemypos.Enemy_X_R = current->enemypos.Enemy_X_L + Enemy_Unlook_offset;
+		}	
+		if((P.x_L<current->enemypos.Enemy_X_R&&P.x_R>current->enemypos.Enemy_X_R&&P.y_U<current->enemypos.Enemy_Y_D)
+			||(P.x_L<current->enemypos.Enemy_X_L&&P.x_R>current->enemypos.Enemy_X_L&&P.y_U<current->enemypos.Enemy_Y_D))	
 		{
 			game_state  = 2;
-		}		
+		}			
+		current = current->next;
 	}
+
 }
 void Eyes_Show(void)
 {  
@@ -161,7 +166,8 @@ void Eyes_Show(void)
 		AD_Conver();
 		Bullet_Show();
 		Check_crush();
-		plant_Show();	
+		plant_Show();
+		Enemy_Show();		
 	}
     else if(game_state==0)
 	{
@@ -176,6 +182,8 @@ void Eyes_Show(void)
 void Eyes_Tick(void)  //0.01秒定时器
 {
 	Key_Tick();
+	if(Enemy_slow_10==5)
+		ANJIAN_Get();
 	Enemy_slow_10++;
 	if(B_Y>0)B_Y--;		
 	else B_Y = 0;			
