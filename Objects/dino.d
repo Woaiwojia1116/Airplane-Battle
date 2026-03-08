@@ -1,0 +1,9 @@
+.\objects\dino.o: game\dino.c
+.\objects\dino.o: .\Hardware\Timer.h
+.\objects\dino.o: .\Hardware\OLED.h
+.\objects\dino.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\dino.o: .\Hardware\OLED_Data.h
+.\objects\dino.o: .\Hardware\Key.h
+.\objects\dino.o: .\System\Delay.h
+.\objects\dino.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\dino.o: D:\Keil5\ARM\ARMCC\Bin\..\include\math.h
